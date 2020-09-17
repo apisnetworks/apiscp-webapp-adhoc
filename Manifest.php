@@ -36,7 +36,7 @@ class Manifest implements \ArrayAccess, Arrayable {
 	/**
 	 * @var bool Manifest is valid
 	 */
-	protected $signed = false;
+	private $signed;
 
 	protected function __construct(Unknown $app)
 	{
@@ -45,7 +45,6 @@ class Manifest implements \ArrayAccess, Arrayable {
 			fatal('Context mismatch');
 		}
 		$this->meta = (array)$this->getManifest();
-		$this->signed = $this->verifySignature();
 	}
 
 	/**
@@ -180,6 +179,9 @@ class Manifest implements \ArrayAccess, Arrayable {
 
 	public function offsetGet($offset)
 	{
+		if ($this->signed === null) {
+			$this->signed = $this->verifySignature();
+		}
 		return $this->signed ? ($this->meta[$offset] ?? null) : null;
 	}
 
