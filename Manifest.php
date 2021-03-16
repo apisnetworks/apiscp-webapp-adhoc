@@ -16,6 +16,7 @@ namespace Module\Support\Webapps\App\Type\Adhoc;
 use Auth\Sectoken;
 use Illuminate\Contracts\Support\Arrayable;
 use Module\Support\Webapps\App\Type\Unknown\Handler as Unknown;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 class Manifest implements \ArrayAccess, Arrayable {
@@ -44,7 +45,13 @@ class Manifest implements \ArrayAccess, Arrayable {
 		if (!$app->contextSynchronized($this->getAuthContext())) {
 			fatal('Context mismatch');
 		}
-		$this->meta = (array)$this->getManifest();
+
+		try {
+			$this->meta = (array)$this->getManifest();
+		} catch (ParseException $e) {
+			$this->signed = false;
+			error($e->getMessage());
+		}
 	}
 
 	/**
@@ -63,7 +70,11 @@ class Manifest implements \ArrayAccess, Arrayable {
 
 		$hashed = $this->hash($this->meta, $salt);
 		$this->meta['signature'] = $hashed;
-
+		try {
+			$this->getManifest();
+		} catch (ParseException $e) {
+			return error("Failed to sign manifest: %s", $e->getMessage());
+		}
 		if (!$this->verifySignature($hashed)) {
 			return error('Manifest failed self-assessment');
 		}
