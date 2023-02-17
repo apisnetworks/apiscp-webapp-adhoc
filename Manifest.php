@@ -183,11 +183,13 @@ class Manifest implements \ArrayAccess, Arrayable {
 		return $this->app->getAppRoot() . '/' . self::MANIFEST_FILE;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetExists($offset)
 	{
 		return isset($this->meta[$offset]);
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		if ($this->signed === null) {
@@ -196,11 +198,13 @@ class Manifest implements \ArrayAccess, Arrayable {
 		return $this->signed ? ($this->meta[$offset] ?? null) : null;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetSet($offset, $value)
 	{
 		$this->meta[$offset] = $value;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetUnset($offset)
 	{
 		unset($this->meta[$offset]);
