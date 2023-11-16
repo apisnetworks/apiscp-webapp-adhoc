@@ -26,7 +26,7 @@ class Manifest implements \ArrayAccess, Arrayable {
 
 	public const MANIFEST_FILE = '.webapp.yml';
 	protected const SIGNING_KEY = 'signature';
-	protected const MANIFEST_RELEASE = '1.0';
+	protected const MANIFEST_RELEASE = '1.1';
 
 	protected $meta = [];
 
@@ -180,7 +180,7 @@ class Manifest implements \ArrayAccess, Arrayable {
 	 */
 	public function getManifestPath(): string
 	{
-		return $this->app->getAppRoot() . '/' . self::MANIFEST_FILE;
+		return $this->app->getDocumentRoot() . '/' . self::MANIFEST_FILE;
 	}
 
 	#[\ReturnTypeWillChange]
